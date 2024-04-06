@@ -2,7 +2,7 @@
 
 Welcome to the Cat Adoption Application! This full-stack application is built with NestJS for the backend and Vite React for the frontend.
 
-## Installation
+## Installation :sparkles:
 
 To get started with the development environment, follow these steps:
 
@@ -47,7 +47,7 @@ npm run start
 
 This will start both the backend server (NestJS) and frontend server (Vite React) concurrently.
 
-## Development Scripts
+## Development Scripts :sparkles:
 
 - `npm run backend`: Starts the backend server in development mode.
 - `npm run frontend`: Starts the frontend server in development mode.
@@ -55,14 +55,14 @@ This will start both the backend server (NestJS) and frontend server (Vite React
 - `npm run install`: Installs dependencies for both backend and frontend.
 - `npm run clean`: Cleans up dependencies and lock files for both backend and frontend.
 
-## Backend Endpoints
+## Backend Endpoints :sparkles:
 
-### Authentication
+### Authentication  🌐 
 
 - `POST /auth/register:` Register a new user and return a JWT.
 - `POST /auth/login:` Authenticate a user and return a JWT.
 
-### Cat Management
+### Cat Management  🌐 
 
 - `GET /cats:` Retrieve a list of all cats.
 - `POST /cats:` Create a new cat profile (admin only).
@@ -70,16 +70,16 @@ This will start both the backend server (NestJS) and frontend server (Vite React
 - `PUT /cats/{id}:` Update a cat profile by ID (admin only).
 - `DELETE /cats/{id}:` Delete a cat profile by ID (admin only).
 
-## Backend Additional Feature
+## Backend Additional Feature :sparkles:
 Associating Users with Created Cats
 - When an admin creates a new cat using the create endpoint (`POST /cats`), the user who made the request is automatically associated with the created cat.
 - This association is achieved by setting the `user` field in the `createCatDto` to the user object extracted from the JWT token.
 - This allows for tracking the creator of each cat within the system.
 
 
-## Backend Test Results
+## Backend Test Results :sparkles:
 All test suites passed successfully.
-- **Test Suites:** 6 passed, 6 total
-- **Tests:** 30 passed, 30 total
-- **Snapshots:** 0 total
-- **Time:** 4.009 s
+- **Test Suites:** 6 passed, 6 total :white_check_mark:
+- **Tests:** 30 passed, 30 total :white_check_mark:
+- **Snapshots:** 0 total :white_check_mark:
+- **Time:** 4.009s :white_check_mark:
