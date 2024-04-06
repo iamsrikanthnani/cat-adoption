@@ -1,0 +1,16 @@
+{
+  "name": "cat-adoption",
+  "version": "0.0.1",
+  "description": "cat-adoption full-stack Application",
+  "scripts": {
+    "backend": "cd backend && npm run start:dev",
+    "frontend": "cd frontend && npm run dev",
+    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "install": "cd backend && npm install && cd ../frontend && npm install",
+    "clean": "cd backend && rm -rf node_modules package-lock.json && cd ../frontend && rm -rf node_modules package-lock.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^7.0.0"
+  }
+}
