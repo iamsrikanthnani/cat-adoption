@@ -54,3 +54,32 @@ This will start both the backend server (NestJS) and frontend server (Vite React
 - `npm start`: Starts both the backend and frontend servers concurrently.
 - `npm run install`: Installs dependencies for both backend and frontend.
 - `npm run clean`: Cleans up dependencies and lock files for both backend and frontend.
+
+## Backend Endpoints
+
+### Authentication
+
+- `POST /auth/register:` Register a new user and return a JWT.
+- `POST /auth/login:` Authenticate a user and return a JWT.
+
+### Cat Management
+
+- `GET /cats:` Retrieve a list of all cats.
+- `POST /cats:` Create a new cat profile (admin only).
+- `GET /cats/{id}:` Retrieve a cat profile by ID.
+- `PUT /cats/{id}:` Update a cat profile by ID (admin only).
+- `DELETE /cats/{id}:` Delete a cat profile by ID (admin only).
+
+## Backend Additional Feature
+Associating Users with Created Cats
+- When an admin creates a new cat using the create endpoint (`POST /cats`), the user who made the request is automatically associated with the created cat.
+- This association is achieved by setting the `user` field in the `createCatDto` to the user object extracted from the JWT token.
+- This allows for tracking the creator of each cat within the system.
+
+
+## Backend Test Results
+All test suites passed successfully.
+- **Test Suites:** 6 passed, 6 total
+- **Tests:** 30 passed, 30 total
+- **Snapshots:** 0 total
+- **Time:** 4.009 s
