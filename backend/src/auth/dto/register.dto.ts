@@ -1,19 +1,30 @@
 import { Role } from "@/common/entities/role.entity";
-import { IsNotEmpty, IsEmail, IsString, IsEnum } from "class-validator";
+import {
+  IsNotEmpty,
+  IsEmail,
+  IsString,
+  IsEnum,
+  MinLength,
+  MaxLength,
+} from "class-validator";
 
 export class RegisterDto {
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "Name is required" })
   name: string;
 
-  @IsEmail()
-  @IsNotEmpty()
+  @IsEmail({}, { message: "Invalid email format" })
+  @IsNotEmpty({ message: "Email is required" })
   email: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "Password is required" })
+  @MinLength(8, { message: "Password must be at least 8 characters long" })
+  @MaxLength(20, { message: "Password cannot be longer than 20 characters" })
   password: string;
 
-  @IsEnum(Role)
+  @IsEnum(Role, {
+    message: "Invalid role!",
+  })
   role: Role;
 }
