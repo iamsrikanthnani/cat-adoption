@@ -3,15 +3,16 @@ import { CatsController } from "./cats.controller";
 import { CatsService } from "./cats.service";
 import { CreateCatDto } from "./dto/create-cat.dto";
 import { UpdateCatDto } from "./dto/update-cat.dto";
+import { Cat } from "./entities/cat.entity";
 import { Gender } from "./dto/gender.enum";
 import { Role } from "@/common/entities/role.entity";
-import { Cat } from "./entities/cat.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { JwtService } from "@nestjs/jwt";
 import { AuthGuard } from "@/common/guards/auth.guard";
 import { UsersService } from "@/users/users.service";
 import { Repository } from "typeorm";
 import { User } from "@/users/entities/user.entity";
+import { HttpException, HttpStatus } from "@nestjs/common";
 
 describe("CatsController", () => {
   let catsController: CatsController;
@@ -60,9 +61,7 @@ describe("CatsController", () => {
         user: { id: 1, name: "John Doe", role: Role.Admin },
       };
 
-      jest
-        .spyOn(catsService, "create")
-        .mockResolvedValue(Promise.resolve(createdCat));
+      jest.spyOn(catsService, "create").mockResolvedValue(createdCat);
 
       expect(await catsController.create(createCatDto, req)).toEqual(
         createdCat
@@ -82,7 +81,15 @@ describe("CatsController", () => {
           images: ["image1.jpg", "image2.jpg"],
           user: { id: 1, name: "John Doe", role: Role.Admin },
         },
-        // Add more cat objects as needed
+        {
+          id: 2,
+          name: "Whiskers",
+          age: 3,
+          breed: "Persian",
+          gender: Gender.Female,
+          images: ["image3.jpg", "image4.jpg"],
+          user: { id: 2, name: "Jane Smith", role: Role.User },
+        },
       ];
 
       jest.spyOn(catsService, "findAll").mockResolvedValue(cats);
@@ -92,59 +99,67 @@ describe("CatsController", () => {
   });
 
   describe("findOne", () => {
-    it("should return a single cat by id", async () => {
-      const catId = "1";
-      const cat: Cat = {
-        id: 1,
-        name: "Pixel",
-        age: 2,
-        breed: "Bombay",
+    it("should throw an error if cat with given ID is not found", async () => {
+      const invalidCatId = 999;
+
+      jest
+        .spyOn(catsService, "findOne")
+        .mockRejectedValue(
+          new HttpException(
+            `Cannot get cat. Cat with ID ${invalidCatId} not found.`,
+            HttpStatus.NOT_FOUND
+          )
+        );
+
+      // Expecting the findOne method to throw an error when called with invalidCatId
+      await expect(
+        catsController.findOne(`${invalidCatId}`)
+      ).rejects.toThrowError(HttpException);
+    });
+  });
+
+  describe("update", () => {
+    it("should update a cat by ID", async () => {
+      const catId = 1;
+      const updateCatDto: UpdateCatDto = {
+        name: "Updated Name",
+        age: 3,
+        breed: "Updated Breed",
+        gender: Gender.Male,
+        images: ["image1.jpg", "image2.jpg"],
+      };
+
+      const updatedCat: Cat = {
+        id: catId,
+        name: "Updated Name",
+        age: 3,
+        breed: "Updated Breed",
         gender: Gender.Male,
         images: ["image1.jpg", "image2.jpg"],
         user: { id: 1, name: "John Doe", role: Role.Admin },
       };
 
-      jest.spyOn(catsService, "findOne").mockResolvedValue(cat);
-
-      expect(await catsController.findOne(catId)).toEqual(cat);
-    });
-  });
-
-  describe("update", () => {
-    it("should update a cat by id", async () => {
-      const catId = "1";
-      const updateCatDto: UpdateCatDto = {
-        name: "Updated Pixel",
-        age: 3,
-        breed: "Updated Bombay",
-        gender: Gender.Female,
-        images: ["updated-image1.jpg", "updated-image2.jpg"],
-      };
-
-      const req = { user: { id: 1, name: "John Doe", role: Role.Admin } };
-
-      const updatedCat: Cat = {
-        id: 1,
-        ...updateCatDto,
-        user: req.user,
-      };
+      const req = { user: { id: 1, name: "John Doe", role: Role.Admin } }; // Mock request object
 
       jest.spyOn(catsService, "update").mockResolvedValue(updatedCat);
 
-      expect(await catsController.update(catId, updateCatDto, req)).toEqual(
-        updatedCat
-      );
+      expect(
+        await catsController.update(`${catId}`, updateCatDto, req)
+      ).toEqual(updatedCat);
     });
   });
 
   describe("remove", () => {
-    it("should remove a cat by id", async () => {
-      const catId = "1";
-      const removeMessage = { message: `Cat with ID ${catId} removed` };
+    it("should remove a cat by ID", async () => {
+      const catId = 1;
 
-      jest.spyOn(catsService, "remove").mockResolvedValue(removeMessage);
+      jest
+        .spyOn(catsService, "remove")
+        .mockResolvedValue({ message: "Cat deleted successfully" });
 
-      expect(await catsController.remove(catId)).toEqual(removeMessage);
+      expect(await catsController.remove(`${catId}`)).toEqual({
+        message: "Cat deleted successfully",
+      });
     });
   });
 });
