@@ -13,7 +13,7 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
     PassportModule,
     JwtModule.register({
       // Secret key used to sign JWT tokens.
-      secret: process.env.JWT_SECRET || "cat-secret",
+      secret: process.env.JWT_SECRET_KEY,
       // Options for signing the JWT token.
       signOptions: { expiresIn: "1d" },
     }),

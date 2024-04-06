@@ -1,35 +1,34 @@
 import {
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-  IsEnum,
   IsArray,
-  ArrayNotEmpty,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
   IsUrl,
   ValidateNested,
 } from "class-validator";
 import { Gender } from "./gender.enum";
 import { User } from "@/users/entities/user.entity";
 
-export class CreateCatDto {
-  @IsNotEmpty()
+export class UpdateCatDto {
+  @IsOptional()
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   age: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   breed: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(Gender)
   gender: Gender;
 
   @IsArray()
-  @ArrayNotEmpty()
+  @IsOptional()
   @IsUrl({}, { each: true })
   images: string[];
 
