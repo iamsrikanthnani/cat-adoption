@@ -1,32 +1,61 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
-import { CatsService } from './cats.service';
-import { CreateCatDto } from './dto/create-cat.dto';
-import { Cat } from './interfaces/cat.interface';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Request,
+  UseGuards,
+} from "@nestjs/common";
+import { Roles } from "../common/decorators/roles.decorator";
+import { RolesGuard } from "../common/guards/roles.guard";
+import { CatsService } from "./cats.service";
+import { CreateCatDto } from "./dto/create-cat.dto";
+import { UpdateCatDto } from "./dto/update-cat.dto";
+import { JwtAuthGuard } from "@/common/guards/jwt.guard";
+import { Role } from "@/common/entities/role.entity";
+import { AuthGuard } from "@/common/guards/auth.guard";
 
-@UseGuards(RolesGuard)
-@Controller('cats')
+@UseGuards(JwtAuthGuard, RolesGuard, AuthGuard)
+@Controller("cats")
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
+  @Roles([Role.Admin])
   @Post()
-  @Roles(['admin'])
-  async create(@Body() createCatDto: CreateCatDto) {
-    this.catsService.create(createCatDto);
+  create(@Body() createCatDto: CreateCatDto, @Request() req) {
+    // Extract user information from the request
+    createCatDto.user = req?.user;
+    return this.catsService.create(createCatDto);
   }
 
   @Get()
-  async findAll(): Promise<Cat[]> {
+  findAll() {
     return this.catsService.findAll();
   }
 
-  @Get(':id')
-  findOne(
-    @Param('id', new ParseIntPipe())
-    id: number,
+  @Get(":id")
+  findOne(@Param("id") id: string) {
+    return this.catsService.findOne(+id, "get");
+  }
+
+  @Roles([Role.Admin])
+  @Put(":id")
+  update(
+    @Param("id") id: string,
+    @Body() updateCatDto: UpdateCatDto,
+    @Request() req
   ) {
-    // get by ID logic
+    // Extract user information from the request
+    updateCatDto.user = req?.user;
+    return this.catsService.update(+id, updateCatDto);
+  }
+
+  @Roles([Role.Admin])
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.catsService.remove(+id);
   }
 }
