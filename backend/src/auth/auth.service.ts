@@ -53,7 +53,7 @@ export class AuthService {
     } catch (error) {
       throw new HttpException(
         {
-          message: "email address is taken. Please try another.",
+          message: "User with this email already exists",
           error: error.message,
         },
         HttpStatus.BAD_REQUEST
