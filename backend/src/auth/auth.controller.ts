@@ -6,11 +6,13 @@ import { LoginDto, RegisterDto } from "./dto";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // Endpoint for user registration.
   @Post("/register")
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
+  // Endpoint for user login.
   @Post("/login")
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);

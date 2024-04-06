@@ -1,10 +1,24 @@
-import { Module } from '@nestjs/common';
-import { CatsModule } from './cats/cats.module';
-import { CoreModule } from './core/core.module';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
+import { DatabaseModule } from "./database/database.module";
+import { AuthModule } from "./auth/auth.module";
+import { UsersModule } from "./users/users.module";
+import { CatsModule } from "./cats/cats.module";
 
 @Module({
-  imports: [CoreModule, CatsModule, AuthModule, UsersModule],
+  imports: [
+    // global configuration module
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    // database module
+    DatabaseModule,
+    // authentication module
+    AuthModule,
+    // users module
+    UsersModule,
+    // cats module
+    CatsModule,
+  ],
 })
 export class AppModule {}
