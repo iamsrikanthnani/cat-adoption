@@ -1,34 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { FavoritesService } from './favorites.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
-
-@Controller('favorites')
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Body,
+  UseGuards,
+  Request,
+} from "@nestjs/common";
+import { FavoritesService } from "./favorites.service";
+import { CreateFavoriteDto, DeleteFavoriteDto } from "./dto";
+import { JwtAuthGuard } from "@/common/guards/jwt.guard";
+import { AuthGuard } from "@/common/guards/auth.guard";
+@UseGuards(JwtAuthGuard, AuthGuard)
+@Controller("favorites")
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
-  @Post()
-  create(@Body() createFavoriteDto: CreateFavoriteDto) {
+  // Endpoint for adding a favorite cat.
+  @Post("/add")
+  create(@Body() createFavoriteDto: CreateFavoriteDto, @Request() req) {
+    // Set user ID from request to the DTO.
+    createFavoriteDto.userId = req?.user?.id;
     return this.favoritesService.create(createFavoriteDto);
   }
 
+  // Endpoint for removing a favorite cat.
+  @Delete("/remove")
+  remove(@Body() deleteFavoriteDto: DeleteFavoriteDto) {
+    return this.favoritesService.remove(deleteFavoriteDto);
+  }
+
+  // Endpoint for fetching favorite cats by user ID.
   @Get()
-  findAll() {
-    return this.favoritesService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.favoritesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFavoriteDto: UpdateFavoriteDto) {
-    return this.favoritesService.update(+id, updateFavoriteDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favoritesService.remove(+id);
+  findByUserIdWithFavoriteCats(@Request() req) {
+    return this.favoritesService.findByUserIdWithFavoriteCats(req?.user?.id);
   }
 }
