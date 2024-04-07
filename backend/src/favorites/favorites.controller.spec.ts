@@ -1,114 +1,201 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { FavoritesController } from "./favorites.controller";
 import { FavoritesService } from "./favorites.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 import { CreateFavoriteDto, DeleteFavoriteDto } from "./dto";
 import { Favorite } from "./entities/favorite.entity";
-import { JwtService } from "@nestjs/jwt";
-import { AuthGuard } from "@/common/guards/auth.guard";
-import { UsersService } from "@/users/users.service";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { User } from "@/users/entities/user.entity";
-import { Repository } from "typeorm";
+import { BadRequestException, HttpException, HttpStatus } from "@nestjs/common";
+import { Cat } from "@/cats/entities/cat.entity";
 
 describe("FavoritesController", () => {
-  let controller: FavoritesController;
-  let favoritesService: FavoritesService;
+  let service: FavoritesService;
+  let favoriteRepository: Repository<Favorite>;
+  let catRepository: Repository<Cat>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [FavoritesController],
       providers: [
         FavoritesService,
-        JwtService,
-        AuthGuard,
-        UsersService,
         {
-          provide: getRepositoryToken(User),
+          provide: getRepositoryToken(Favorite),
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Favorite),
-          useClass: jest.fn(),
+          provide: getRepositoryToken(Cat),
+          useClass: Repository,
         },
       ],
     }).compile();
 
-    controller = module.get<FavoritesController>(FavoritesController);
-    favoritesService = module.get<FavoritesService>(FavoritesService);
+    service = module.get<FavoritesService>(FavoritesService);
+    favoriteRepository = module.get<Repository<Favorite>>(
+      getRepositoryToken(Favorite)
+    );
+    catRepository = module.get<Repository<Cat>>(getRepositoryToken(Cat));
   });
 
   it("should be defined", () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
+  });
+
+  describe("catExists", () => {
+    it("should return true if the cat with the provided ID exists", async () => {
+      const catId = 1;
+      jest
+        .spyOn(catRepository, "findOne")
+        .mockResolvedValueOnce({ id: catId } as Cat);
+
+      const result = await service.catExists(catId);
+
+      expect(result).toBeTruthy();
+      expect(catRepository.findOne).toHaveBeenCalledWith({
+        where: { id: catId },
+      });
+    });
+
+    it("should return false if the cat with the provided ID does not exist", async () => {
+      const catId = 1;
+      jest.spyOn(catRepository, "findOne").mockResolvedValueOnce(undefined);
+
+      const result = await service.catExists(catId);
+
+      expect(result).toBeFalsy();
+      expect(catRepository.findOne).toHaveBeenCalledWith({
+        where: { id: catId },
+      });
+    });
   });
 
   describe("create", () => {
-    it("should create a favorite cat", async () => {
-      const createFavoriteDto: CreateFavoriteDto = {
-        catId: 1,
-        userId: 1,
-      };
-      const mockFavorite: Favorite = {
+    it("should create a new favorite for the specified user and cat", async () => {
+      const createFavoriteDto: CreateFavoriteDto = { catId: 1 };
+      const userId = 1;
+      const newFavorite = {
         id: 1,
-        catId: 1,
-        userId: 1,
-      };
+        cat: { id: createFavoriteDto.catId },
+        user: { id: userId },
+      } as Favorite;
+
       jest
-        .spyOn(favoritesService, "create")
-        .mockResolvedValueOnce(mockFavorite);
+        .spyOn(catRepository, "findOne")
+        .mockResolvedValueOnce({ id: createFavoriteDto.catId } as Cat);
+      jest
+        .spyOn(service, "findByUserIdAndCatId")
+        .mockResolvedValueOnce(undefined);
+      jest.spyOn(favoriteRepository, "create").mockReturnValueOnce(newFavorite);
+      jest.spyOn(favoriteRepository, "save").mockResolvedValueOnce(newFavorite);
 
-      const result = await controller.create(createFavoriteDto, {
-        user: { id: createFavoriteDto.userId },
+      const result = await service.create(createFavoriteDto, userId);
+
+      expect(result).toEqual(newFavorite);
+      expect(catRepository.findOne).toHaveBeenCalledWith({
+        where: { id: createFavoriteDto.catId },
       });
+      expect(service.findByUserIdAndCatId).toHaveBeenCalledWith(
+        userId,
+        createFavoriteDto.catId
+      );
+      expect(favoriteRepository.create).toHaveBeenCalledWith({
+        cat: { id: createFavoriteDto.catId },
+        user: { id: userId },
+      });
+      expect(favoriteRepository.save).toHaveBeenCalledWith(newFavorite);
+    });
 
-      expect(result).toEqual(mockFavorite);
+    it("should throw BadRequestException if the cat with the provided ID does not exist", async () => {
+      const createFavoriteDto: CreateFavoriteDto = { catId: 1 };
+      const userId = 1;
+
+      jest.spyOn(catRepository, "findOne").mockResolvedValueOnce(undefined);
+
+      await expect(
+        service.create(createFavoriteDto, userId)
+      ).rejects.toThrowError(BadRequestException);
+
+      expect(catRepository.findOne).toHaveBeenCalledWith({
+        where: { id: createFavoriteDto.catId },
+      });
+    });
+
+    it("should throw BadRequestException if the favorite already exists for the user and cat", async () => {
+      const createFavoriteDto: CreateFavoriteDto = { catId: 1 };
+      const userId = 1;
+
+      jest
+        .spyOn(catRepository, "findOne")
+        .mockResolvedValueOnce({ id: createFavoriteDto.catId } as Cat);
+      jest
+        .spyOn(service, "findByUserIdAndCatId")
+        .mockResolvedValueOnce({} as Favorite);
+
+      await expect(
+        service.create(createFavoriteDto, userId)
+      ).rejects.toThrowError(BadRequestException);
+
+      expect(catRepository.findOne).toHaveBeenCalledWith({
+        where: { id: createFavoriteDto.catId },
+      });
+      expect(service.findByUserIdAndCatId).toHaveBeenCalledWith(
+        userId,
+        createFavoriteDto.catId
+      );
     });
   });
 
   describe("remove", () => {
-    it("should remove a favorite cat", async () => {
-      const deleteFavoriteDto: DeleteFavoriteDto = {
-        id: 1,
-      };
-      const mockFavorite: Favorite = {
-        id: 1,
-        catId: 1,
-        userId: 1,
-      };
-      jest
-        .spyOn(favoritesService, "remove")
-        .mockResolvedValueOnce({ message: "deleted successfully" });
+    it("should remove a favorite based on the provided favorite ID", async () => {
+      const deleteFavoriteDto: DeleteFavoriteDto = { catId: 1 };
+      const favoriteToRemove = { id: deleteFavoriteDto.catId } as Favorite;
 
-      const result = await controller.remove(deleteFavoriteDto);
+      jest.spyOn(service, "findOne").mockResolvedValueOnce(favoriteToRemove);
+      jest.spyOn(favoriteRepository, "remove").mockResolvedValueOnce(undefined);
+
+      const result = await service.remove(deleteFavoriteDto);
 
       expect(result).toEqual({ message: "deleted successfully" });
+      expect(service.findOne).toHaveBeenCalledWith(
+        deleteFavoriteDto.catId,
+        "delete"
+      );
+      expect(favoriteRepository.remove).toHaveBeenCalledWith(favoriteToRemove);
+    });
+
+    it("should throw HttpException if the favorite with the provided ID is not found", async () => {
+      const deleteFavoriteDto: DeleteFavoriteDto = { catId: 1 };
+
+      jest
+        .spyOn(service, "findOne")
+        .mockRejectedValueOnce(
+          new HttpException("Favorite not found", HttpStatus.NOT_FOUND)
+        );
+
+      await expect(service.remove(deleteFavoriteDto)).rejects.toThrowError(
+        HttpException
+      );
+      expect(service.findOne).toHaveBeenCalledWith(
+        deleteFavoriteDto.catId,
+        "delete"
+      );
     });
   });
 
   describe("findByUserIdWithFavoriteCats", () => {
-    it("should fetch favorite cats by user ID", async () => {
+    it("should fetch favorite cats for the specified user", async () => {
       const userId = 1;
-      const mockFavoriteCats: Favorite[] = [
-        {
-          id: 1,
-          catId: 1,
-          userId: userId,
-        },
-        {
-          id: 2,
-          catId: 2,
-          userId: userId,
-        },
-      ];
+      const favorites = [
+        { id: 1, cat: { id: 1 } },
+        { id: 2, cat: { id: 2 } },
+      ] as Favorite[];
 
-      jest
-        .spyOn(favoritesService, "findByUserIdWithFavoriteCats")
-        .mockResolvedValueOnce({ favorites: mockFavoriteCats });
+      jest.spyOn(favoriteRepository, "find").mockResolvedValueOnce(favorites);
 
-      const result = await controller.findByUserIdWithFavoriteCats({
-        user: { id: userId },
+      const result = await service.findByUserIdWithFavoriteCats(userId);
+
+      expect(result).toEqual({ favorites });
+      expect(favoriteRepository.find).toHaveBeenCalledWith({
+        where: { user: { id: userId } },
+        relations: ["cat"],
       });
-
-      expect(result.favorites).toEqual(mockFavoriteCats);
     });
   });
 });

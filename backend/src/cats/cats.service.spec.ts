@@ -32,7 +32,7 @@ describe("CatsController", () => {
         },
         {
           provide: getRepositoryToken(Cat),
-          useClass: jest.fn(),
+          useClass: Repository, // Use Repository class for Cat entity
         },
       ],
     }).compile();
@@ -40,6 +40,17 @@ describe("CatsController", () => {
     catsService = moduleRef.get<CatsService>(CatsService);
     catsController = moduleRef.get<CatsController>(CatsController);
   });
+
+  const req = {
+    user: {
+      id: 1,
+      name: "John Doe",
+      role: Role.Admin,
+      email: "john@example.com",
+      password: "password123",
+      createdAt: new Date(),
+    },
+  };
 
   describe("create", () => {
     it("should create a cat", async () => {
@@ -51,14 +62,13 @@ describe("CatsController", () => {
         images: ["image1.jpg", "image2.jpg"],
       };
 
-      const req = { user: { id: 1, name: "John Doe", role: Role.Admin } };
-
       const createdCat: Cat = {
         ...createCatDto,
         id: 1,
         gender: Gender.Male,
         images: ["image1.jpg", "image2.jpg"],
-        user: { id: 1, name: "John Doe", role: Role.Admin },
+        user: req.user,
+        favorites: [],
       };
 
       jest.spyOn(catsService, "create").mockResolvedValue(createdCat);
@@ -79,7 +89,8 @@ describe("CatsController", () => {
           breed: "Bombay",
           gender: Gender.Male,
           images: ["image1.jpg", "image2.jpg"],
-          user: { id: 1, name: "John Doe", role: Role.Admin },
+          user: req.user,
+          favorites: [],
         },
         {
           id: 2,
@@ -88,7 +99,8 @@ describe("CatsController", () => {
           breed: "Persian",
           gender: Gender.Female,
           images: ["image3.jpg", "image4.jpg"],
-          user: { id: 2, name: "Jane Smith", role: Role.User },
+          user: req.user,
+          favorites: [],
         },
       ];
 
@@ -136,10 +148,9 @@ describe("CatsController", () => {
         breed: "Updated Breed",
         gender: Gender.Male,
         images: ["image1.jpg", "image2.jpg"],
-        user: { id: 1, name: "John Doe", role: Role.Admin },
+        user: req.user,
+        favorites: [],
       };
-
-      const req = { user: { id: 1, name: "John Doe", role: Role.Admin } }; // Mock request object
 
       jest.spyOn(catsService, "update").mockResolvedValue(updatedCat);
 
@@ -157,7 +168,7 @@ describe("CatsController", () => {
         .spyOn(catsService, "remove")
         .mockResolvedValue({ message: "Cat deleted successfully" });
 
-      expect(await catsController.remove(`${catId}`)).toEqual({
+      expect(await catsController.remove(`${catId}`, req)).toEqual({
         message: "Cat deleted successfully",
       });
     });

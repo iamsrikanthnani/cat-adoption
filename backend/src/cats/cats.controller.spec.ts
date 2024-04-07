@@ -40,6 +40,17 @@ describe("CatsController", () => {
     catsController = moduleRef.get<CatsController>(CatsController);
   });
 
+  const req = {
+    user: {
+      id: 1,
+      name: "John Doe",
+      role: Role.Admin,
+      email: "john@example.com",
+      password: "password123",
+      createdAt: new Date(),
+    },
+  };
+
   describe("create", () => {
     it("should create a cat", async () => {
       const createCatDto: CreateCatDto = {
@@ -50,14 +61,13 @@ describe("CatsController", () => {
         images: ["image1.jpg", "image2.jpg"],
       };
 
-      const req = { user: { id: 1, name: "John Doe", role: Role.Admin } };
-
       const createdCat: Cat = {
         ...createCatDto,
         id: 1,
         gender: Gender.Male,
         images: ["image1.jpg", "image2.jpg"],
-        user: { id: 1, name: "John Doe", role: Role.Admin },
+        user: req.user,
+        favorites: [],
       };
 
       jest
@@ -80,7 +90,8 @@ describe("CatsController", () => {
           breed: "Bombay",
           gender: Gender.Male,
           images: ["image1.jpg", "image2.jpg"],
-          user: { id: 1, name: "John Doe", role: Role.Admin },
+          user: req.user,
+          favorites: [],
         },
         // Add more cat objects as needed
       ];
@@ -101,7 +112,8 @@ describe("CatsController", () => {
         breed: "Bombay",
         gender: Gender.Male,
         images: ["image1.jpg", "image2.jpg"],
-        user: { id: 1, name: "John Doe", role: Role.Admin },
+        user: req.user,
+        favorites: [],
       };
 
       jest.spyOn(catsService, "findOne").mockResolvedValue(cat);
@@ -121,12 +133,11 @@ describe("CatsController", () => {
         images: ["updated-image1.jpg", "updated-image2.jpg"],
       };
 
-      const req = { user: { id: 1, name: "John Doe", role: Role.Admin } };
-
       const updatedCat: Cat = {
         id: 1,
         ...updateCatDto,
         user: req.user,
+        favorites: [],
       };
 
       jest.spyOn(catsService, "update").mockResolvedValue(updatedCat);
@@ -144,7 +155,7 @@ describe("CatsController", () => {
 
       jest.spyOn(catsService, "remove").mockResolvedValue(removeMessage);
 
-      expect(await catsController.remove(catId)).toEqual(removeMessage);
+      expect(await catsController.remove(catId, req)).toEqual(removeMessage);
     });
   });
 });
