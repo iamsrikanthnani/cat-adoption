@@ -1,21 +1,22 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { emailRegex } from "@/lib/reg";
-import { TYPES_LOGIN } from "@/types";
+import { TYPE_LOGIN } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { LOGIN_API_URL } from "@/apis";
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
   // STATES
-  const [inputs, setInputs] = useState<TYPES_LOGIN>({
+  const [inputs, setInputs] = useState<TYPE_LOGIN>({
     email: "",
     password: "",
   });
-  const [inputErrors, setInputErrors] = useState<TYPES_LOGIN>({
+  const [inputErrors, setInputErrors] = useState<TYPE_LOGIN>({
     email: "",
     password: "",
   });
-
+  const navigate = useNavigate();
   // Mutation hook for handling API calls
   const mutation = useMutation({
     mutationFn: async ({
@@ -39,6 +40,9 @@ export const useLogin = () => {
           return null;
         }
         toast.success(`Hello 👋, Welcome back!`);
+        localStorage.setItem("accessToken", data?.accessToken);
+        localStorage.setItem("user", JSON.stringify(data?.user));
+        navigate("/");
         resetStates();
         return data;
       } catch (error: any) {
