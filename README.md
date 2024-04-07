@@ -69,17 +69,44 @@ This will start both the backend server (NestJS) and frontend server (Vite React
 - `GET /cats/{id}:` Retrieve a cat profile by ID.
 - `PUT /cats/{id}:` Update a cat profile by ID (admin only).
 - `DELETE /cats/{id}:` Delete a cat profile by ID (admin only).
+- `POST /favorites/add`: Add a cat to favorites.
+- `DELETE /favorites/remove`: Remove a cat from favorites.
+- `GET /favorites`: Retrieve all favorite cats of the authenticated user.
 
-## Backend Additional Feature :sparkles:
-Associating Users with Created Cats
-- When an admin creates a new cat using the create endpoint (`POST /cats`), the user who made the request is automatically associated with the created cat.
-- This association is achieved by setting the `user` field in the `createCatDto` to the user object extracted from the JWT token.
-- This allows for tracking the creator of each cat within the system.
+## Entity Relations :sparkles:
+
+In this project, I have established several entity relations to organize and manage data effectively. Below are the details of the entity relations:
+
+### 👤 User to 🐱 Cat Relation
+- **Description:** Enables each user to have multiple cats associated with them.
+- **Purpose:** Facilitates better organization and management of cat data per user.
+- **Implementation:** This relation is established through a one-to-many association, where each user can have multiple cats.
+
+
+### 👤 User to ⭐ Favorite Relation
+- **Description:** Enables each user to have multiple favorites associated with them.
+- **Purpose:** Allows users to save and manage their favorite cats effectively.
+- **Implementation:** This relation is established through a one-to-many association, where each user can have multiple favorites.
+
+These entity relations play a crucial role in structuring the data and enhancing the functionality of the application.
 
 
 ## Backend Test Results :sparkles:
+
+The following test suites have been meticulously executed and all tests have passed successfully:
+
+- (PASS :white_check_mark:) `src/users/users.service.spec.ts`
+- (PASS :white_check_mark:) `src/users/users.controller.spec.ts`
+- (PASS :white_check_mark:) `src/favorites/favorites.service.spec.ts`
+- (PASS :white_check_mark:) `src/auth/auth.service.spec.ts`
+- (PASS :white_check_mark:) `src/auth/auth.controller.spec.ts`
+- (PASS :white_check_mark:) `src/cats/cats.service.spec.ts`
+- (PASS :white_check_mark:) `src/cats/cats.controller.spec.ts`
+- (PASS :white_check_mark:) `src/favorites/favorites.controller.spec.ts`
+
 All test suites passed successfully.
-- **Test Suites:** 6 passed, 6 total :white_check_mark:
-- **Tests:** 30 passed, 30 total :white_check_mark:
+
+- **Test Suites:** 8 passed, 8 total :white_check_mark:
+- **Tests:** 52 passed, 52 total :white_check_mark:
 - **Snapshots:** 0 total :white_check_mark:
-- **Time:** 4.009s :white_check_mark:
+- **Time:** 4.773s :white_check_mark:
