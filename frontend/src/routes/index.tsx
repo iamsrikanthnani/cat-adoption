@@ -1,5 +1,6 @@
 import { Register, Login, Home, ManageCat, Favorites, NotFound } from "@/app";
 import { Route, Routes } from "react-router-dom";
+import AuthLayout from "./layouts/AuthLayout";
 
 const AppRoutes = () => {
   return (
@@ -7,7 +8,7 @@ const AppRoutes = () => {
       {/* loading route */}
       <Route>
         {/* auth routes */}
-        <Route>
+        <Route element={<AuthLayout />}>
           <Route path="/auth/register" element={<Register />} />
           <Route path="/auth/login" element={<Login />} />
         </Route>
