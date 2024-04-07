@@ -32,7 +32,4 @@ export class CreateCatDto {
   @ArrayNotEmpty()
   @IsUrl({}, { each: true })
   images: string[];
-
-  @ValidateNested()
-  user?: User;
 }

@@ -15,5 +15,6 @@ import { UsersModule } from "@/users/users.module";
   ],
   controllers: [CatsController],
   providers: [CatsService, AuthGuard],
+  exports: [CatsService, TypeOrmModule],
 })
 export class CatsModule {}

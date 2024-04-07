@@ -1,13 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Cat } from "@/cats/entities/cat.entity";
+import { User } from "@/users/entities/user.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 
 @Entity()
 export class Favorite {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  userId: number;
+  @ManyToOne(() => User, (user) => user.favorites)
+  user: User;
 
-  @Column()
-  catId: number;
+  @ManyToOne(() => Cat, (cat) => cat.favorites)
+  cat: Cat;
 }

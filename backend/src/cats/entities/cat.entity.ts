@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from "typeorm";
 import { Gender } from "../dto/gender.enum";
+import { User } from "@/users/entities/user.entity";
+import { Favorite } from "@/favorites/entities/favorite.entity";
 
 @Entity()
 export class Cat {
@@ -24,6 +32,9 @@ export class Cat {
   @Column("text", { array: true })
   images: string[];
 
-  @Column("jsonb")
-  user: Record<string, any>;
+  @ManyToOne(() => User, (user) => user.cats)
+  user: User;
+
+  @OneToMany(() => Favorite, (favorite) => favorite.cat)
+  favorites: Favorite[];
 }

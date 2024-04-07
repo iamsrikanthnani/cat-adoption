@@ -19,9 +19,7 @@ export class FavoritesController {
   // Endpoint for adding a favorite cat.
   @Post("/add")
   create(@Body() createFavoriteDto: CreateFavoriteDto, @Request() req) {
-    // Set user ID from request to the DTO.
-    createFavoriteDto.userId = req?.user?.id;
-    return this.favoritesService.create(createFavoriteDto);
+    return this.favoritesService.create(createFavoriteDto, req?.user?.id);
   }
 
   // Endpoint for removing a favorite cat.

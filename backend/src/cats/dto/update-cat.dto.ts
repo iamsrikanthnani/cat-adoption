@@ -31,7 +31,4 @@ export class UpdateCatDto {
   @IsOptional()
   @IsUrl({}, { each: true })
   images: string[];
-
-  @ValidateNested()
-  user?: User;
 }
