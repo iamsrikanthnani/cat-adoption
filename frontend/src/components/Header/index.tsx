@@ -3,17 +3,32 @@ import { CatIcon, HeartIcon, HomeIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const { isAuthenticated } = useAuthContext();
+  const { isAuthenticated, user } = useAuthContext();
 
   const isFavorites = window.location.pathname.includes("/favorites");
 
   return (
-    <div className="flex justify-between items-center px-8 py-4 bg-white">
-      <div className="flex items-center text-lg font-medium gap-2">
-        <CatIcon className="w-6 h-6" />
-        <span className="hidden sm:block">Cat Adoption</span>
-      </div>
-      <div className="flex gap-4">
+    <div className="fixed w-full z-[100] flex justify-between items-center px-8 py-4 bg-white">
+      <Link
+        to="/"
+        className="flex  justify-center items-center gap-2 py-[4px] px-[12px] font-medium hover:bg-[#E6E6C2] rounded-md"
+      >
+        <div className="select-none flex items-center text-lg font-medium gap-2">
+          <CatIcon className="w-6 h-6" />
+          <span className="hidden sm:block">Cat Adoption</span>
+        </div>
+      </Link>
+
+      <div className="flex gap-2">
+        {user?.role === "admin" && (
+          <Link
+            to="/cat/add"
+            className="flex select-none justify-center items-center gap-2 py-[4px] px-[12px] font-medium hover:bg-[#E6E6C2] rounded-md"
+          >
+            <span>Add cat</span>
+            <CatIcon width={16} height={16} />
+          </Link>
+        )}
         {isAuthenticated ? (
           <Link
             to={isFavorites ? "/" : "/favorites"}
