@@ -18,11 +18,11 @@ import { JwtAuthGuard } from "@/common/guards/jwt.guard";
 import { Role } from "@/common/entities/role.entity";
 import { AuthGuard } from "@/common/guards/auth.guard";
 
-@UseGuards(JwtAuthGuard, RolesGuard, AuthGuard)
 @Controller("cats")
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard, AuthGuard)
   @Roles([Role.Admin])
   @Post()
   create(@Body() createCatDto: CreateCatDto, @Request() req) {
@@ -34,11 +34,13 @@ export class CatsController {
     return this.catsService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard, AuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.catsService.findOne(+id, "get");
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard, AuthGuard)
   @Roles([Role.Admin])
   @Put(":id")
   update(
@@ -49,6 +51,7 @@ export class CatsController {
     return this.catsService.update(+id, updateCatDto);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard, AuthGuard)
   @Roles([Role.Admin])
   @Delete(":id")
   remove(@Param("id") id: string, @Request() req) {

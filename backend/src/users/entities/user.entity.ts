@@ -38,4 +38,11 @@ export class User {
 
   @OneToMany(() => Favorite, (favorite) => favorite.user)
   favorites?: Favorite[];
+
+  // enable this code to hide password, and email from user object in relations
+  // toJSON() {
+  //   delete this.password;
+  //   delete this.email;
+  //   return this;
+  // }
 }
