@@ -31,10 +31,10 @@ cp .env.example .env
   ```
   POSTGRES_HOST=localhost
   POSTGRES_PORT=5432
-  POSTGRES_USER=
-  POSTGRES_PASSWORD=
-  POSTGRES_DB=
-  JWT_SECRET_KEY=
+  POSTGRES_USER=[Your PostgreSQL Username]
+  POSTGRES_PASSWORD=[Your PostgreSQL Password]
+  POSTGRES_DB=[Your PostgreSQL Database Name]
+  JWT_SECRET_KEY=[Your JWT Secret Key]
   ```
 
 Make sure to replace the values with appropriate ones based on your PostgreSQL configuration and desired JWT secret key.
@@ -95,13 +95,13 @@ These entity relations play a crucial role in structuring the data and enhancing
 
 The following test suites have been meticulously executed and all tests have passed successfully:
 
-- (PASS :white_check_mark:) `src/users/users.service.spec.ts`
-- (PASS :white_check_mark:) `src/users/users.controller.spec.ts`
-- (PASS :white_check_mark:) `src/favorites/favorites.service.spec.ts`
 - (PASS :white_check_mark:) `src/auth/auth.service.spec.ts`
 - (PASS :white_check_mark:) `src/auth/auth.controller.spec.ts`
+- (PASS :white_check_mark:) `src/users/users.service.spec.ts`
+- (PASS :white_check_mark:) `src/users/users.controller.spec.ts`
 - (PASS :white_check_mark:) `src/cats/cats.service.spec.ts`
 - (PASS :white_check_mark:) `src/cats/cats.controller.spec.ts`
+- (PASS :white_check_mark:) `src/favorites/favorites.service.spec.ts`
 - (PASS :white_check_mark:) `src/favorites/favorites.controller.spec.ts`
 
 All test suites passed successfully.
