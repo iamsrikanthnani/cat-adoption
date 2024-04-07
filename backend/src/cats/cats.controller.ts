@@ -26,9 +26,7 @@ export class CatsController {
   @Roles([Role.Admin])
   @Post()
   create(@Body() createCatDto: CreateCatDto, @Request() req) {
-    // Extract user information from the request
-    createCatDto.user = req?.user;
-    return this.catsService.create(createCatDto);
+    return this.catsService.create(createCatDto, req?.user?.id);
   }
 
   @Get()
@@ -48,14 +46,12 @@ export class CatsController {
     @Body() updateCatDto: UpdateCatDto,
     @Request() req
   ) {
-    // Extract user information from the request
-    updateCatDto.user = req?.user;
     return this.catsService.update(+id, updateCatDto);
   }
 
   @Roles([Role.Admin])
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.catsService.remove(+id);
+  remove(@Param("id") id: string, @Request() req) {
+    return this.catsService.remove(+id, req?.user?.id);
   }
 }

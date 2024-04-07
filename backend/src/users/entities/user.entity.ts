@@ -1,8 +1,11 @@
+import { Cat } from "@/cats/entities/cat.entity";
+import { Favorite } from "@/favorites/entities/favorite.entity";
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  OneToMany,
 } from "typeorm";
 
 export enum Role {
@@ -29,4 +32,10 @@ export class User {
 
   @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
+
+  @OneToMany(() => Cat, (cat) => cat.user)
+  cats?: Cat[];
+
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  favorites?: Favorite[];
 }

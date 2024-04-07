@@ -6,14 +6,17 @@ import { Favorite } from "./entities/favorite.entity";
 import { UsersModule } from "@/users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { AuthGuard } from "@/common/guards/auth.guard";
+import { CatsModule } from "@/cats/cats.module";
+import { CatsService } from "@/cats/cats.service";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Favorite]),
     UsersModule,
+    CatsModule,
     JwtModule.register({}),
   ],
   controllers: [FavoritesController],
-  providers: [FavoritesService, AuthGuard],
+  providers: [FavoritesService, AuthGuard, CatsService],
 })
 export class FavoritesModule {}
