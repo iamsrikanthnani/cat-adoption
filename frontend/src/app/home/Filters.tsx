@@ -10,16 +10,19 @@ import {
 
 const Filters = () => {
   return (
-    <div className="flex justify-between mx-16 bg-white mt-24 rounded-md shadow-lg content-center px-4 py-4">
+    <div className="flex justify-between mx-6 md:mx-16  bg-white mt-24 rounded-md shadow-lg content-center px-4 py-4">
       <CatIcon
         width={44}
         height={44}
         className="p-2 bg-[#E6E6C2] rounded-[100px] border border-yellow-950"
       />
       <div className="flex gap-2">
-        <Input placeholder="Search cat..." className="w-[18vw]" />
+        <Input
+          placeholder="Search cat..."
+          className="w-[50vw] sm:w-[50vw] md:w-[18vw]"
+        />
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="hidden sm:hidden md:block">
             <Input
               placeholder="Select gender..."
               className="w-[18vw] pointer-events-none"
@@ -36,7 +39,7 @@ const Filters = () => {
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="hidden sm:hidden md:block">
             <Input
               placeholder="Select breed..."
               className="w-[18vw] pointer-events-none"
