@@ -6,4 +6,5 @@ export type TYPE_CAT = {
   breed: string;
   gender: "male" | "female";
   images: string[];
+  favorites?: any;
 };

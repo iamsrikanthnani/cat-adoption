@@ -16,6 +16,10 @@ const Home = () => {
         <div className="flex justify-center mt-24 w-full">
           <LoaderIcon className="mr-2 h-12 w-12 animate-spin" />
         </div>
+      ) : data?.length === 0 ? (
+        <div className="gap-6 mt-8 mx-8 sm:mx-8 md:mx-16 pb-16 items-start">
+          <p className="text-md">No Cats found!</p>
+        </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6  mx-8 sm:mx-8 md:mx-16 pb-16 mt-8 items-start">
           {data?.map((cat: TYPE_CAT, index: number) => (

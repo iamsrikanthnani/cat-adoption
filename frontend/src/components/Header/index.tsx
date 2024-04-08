@@ -17,7 +17,7 @@ const Header = () => {
   const isAddCat = window.location.pathname.includes("/cat/add");
 
   return (
-    <div className="fixed w-full z-[100] flex justify-between items-center px-8 py-4 bg-white">
+    <div className="fixed w-full z-[100] flex justify-between items-center px-8 py-4 bg-white shadow">
       <Link
         to="/"
         className="flex  justify-center items-center gap-2 py-[4px] px-[12px] font-medium hover:bg-[#E6E6C2] rounded-md"

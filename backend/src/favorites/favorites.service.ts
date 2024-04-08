@@ -27,16 +27,15 @@ export class FavoritesService {
 
   // Find a Favorite by ID
   async findOne(
-    id: number,
+    catId: number,
     action: "update" | "delete" | "get"
   ): Promise<Favorite> {
-    const favorite = await this.favoritesRepository.findOne({ where: { id } });
+    const favorite = await this.favoritesRepository.findOne({
+      where: { cat: { id: catId } },
+    });
     // If favorite is not found, throw a 404
     if (!favorite) {
-      throw new HttpException(
-        `Favorite with ID ${id} not found.`,
-        HttpStatus.NOT_FOUND
-      );
+      throw new HttpException(`Favorite not found.`, HttpStatus.NOT_FOUND);
     }
 
     return favorite;
