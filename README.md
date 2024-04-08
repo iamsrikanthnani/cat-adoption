@@ -28,18 +28,34 @@ cp .env.example .env
 
 - Open the `.env` file in a text editor and fill in the following variables:
 
-  ```
-  POSTGRES_HOST=localhost
-  POSTGRES_PORT=5432
-  POSTGRES_USER=[Your PostgreSQL Username]
-  POSTGRES_PASSWORD=[Your PostgreSQL Password]
-  POSTGRES_DB=[Your PostgreSQL Database Name]
-  JWT_SECRET_KEY=[Your JWT Secret Key]
-  ```
+```
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=[Your PostgreSQL Username]
+POSTGRES_PASSWORD=[Your PostgreSQL Password]
+POSTGRES_DB=[Your PostgreSQL Database Name]
+JWT_SECRET_KEY=[Your JWT Secret Key]
+```
 
 Make sure to replace the values with appropriate ones based on your PostgreSQL configuration and desired JWT secret key.
 
-### 4. Start the development servers for both the backend and frontend:
+### 4. Set up environment variables for **frontend**, do `cd frontend` and then:
+
+- Copy the `.env.example` file and rename it to `.env`.
+
+```
+cp .env.example .env
+```
+
+- Open the `.env` file in a text editor and fill in the following variables:
+
+```
+VITE_API_URL=http://localhost:3000/[ADD BACKEND API URL]
+```
+
+Make sure to add the backend API URL to the frontend `.env`.
+
+### 5. Start the development servers for both the backend and frontend:
 
 ```
 npm run start
@@ -57,12 +73,12 @@ This will start both the backend server (NestJS) and frontend server (Vite React
 
 ## Backend Endpoints :sparkles:
 
-### Authentication  🌐 
+### Authentication 🌐
 
 - `POST /auth/register:` Register a new user and return a JWT.
 - `POST /auth/login:` Authenticate a user and return a JWT.
 
-### Cat Management  🌐 
+### Cat Management 🌐
 
 - `GET /cats:` Retrieve a list of all cats.
 - `POST /cats:` Create a new cat profile (admin only).
@@ -78,18 +94,18 @@ This will start both the backend server (NestJS) and frontend server (Vite React
 In this project, I have established several entity relations to organize and manage data effectively. Below are the details of the entity relations:
 
 ### 👤 User to 🐱 Cat Relation
+
 - **Description:** Enables each user to have multiple cats associated with them.
 - **Purpose:** Facilitates better organization and management of cat data per user.
 - **Implementation:** This relation is established through a one-to-many association, where each user can have multiple cats.
 
-
 ### 👤 User to ⭐ Favorite Relation
+
 - **Description:** Enables each user to have multiple favorites associated with them.
 - **Purpose:** Allows users to save and manage their favorite cats effectively.
 - **Implementation:** This relation is established through a one-to-many association, where each user can have multiple favorites.
 
 These entity relations play a crucial role in structuring the data and enhancing the functionality of the application.
-
 
 ## Backend Test Results :sparkles:
 
