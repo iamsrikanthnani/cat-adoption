@@ -6,7 +6,7 @@ import { LoaderIcon } from "lucide-react";
 import { TYPE_CAT } from "@/types";
 
 const Home = () => {
-  const { data, isLoading } = useCats();
+  const { data, isLoading } = useCats({ enabled: true });
 
   return (
     <div className="w-screen h-screen overflow-y-scroll bg-[#E6E6C2]">
@@ -17,7 +17,7 @@ const Home = () => {
           <LoaderIcon className="mr-2 h-12 w-12 animate-spin" />
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-5 mx-6 md:mx-16 pb-16 mt-8 items-center">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6  mx-8 sm:mx-8 md:mx-16 pb-16 mt-8 items-start">
           {data?.map((cat: TYPE_CAT, index: number) => (
             <Cat cat={cat} key={`cat-${index}`} />
           ))}

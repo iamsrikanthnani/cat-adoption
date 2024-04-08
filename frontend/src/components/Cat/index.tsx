@@ -1,10 +1,11 @@
 import { useAuthContext } from "@/contexts/auth";
 import { TYPE_CAT } from "@/types";
 import { HeartIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Cat = ({ cat }: { cat: TYPE_CAT }) => {
   const { isAuthenticated } = useAuthContext();
-
+  const navigate = useNavigate();
   return (
     <div
       className="cursor-pointer relative h-44 w-44 rounded-md overflow-hidden"
@@ -13,6 +14,7 @@ const Cat = ({ cat }: { cat: TYPE_CAT }) => {
         backgroundSize: "cover",
         backgroundColor: "white",
       }}
+      onClick={() => navigate(`/cat/view/${cat.id}`)}
     >
       {isAuthenticated && (
         <div className="p-1 absolute top-3 z-50 right-2 cursor-pointer bg-gray-300 hover:bg-[#E6E6C2] shadow-md rounded-md">
