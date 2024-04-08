@@ -22,7 +22,7 @@ const ManageCat = () => {
   } = useManageCat();
 
   return (
-    <div className="mx-auto flex w-full flex-col justify-center px-8 sm:px-16 md:px-24 lg:px-[30vw] h-screen sm:h-screen md:h-full overflow-y-scroll pb-16">
+    <div className="mx-auto flex w-full flex-col justify-center px-8 sm:px-16 md:px-24 lg:px-[30vw] h-screen sm:h-screen md:h-full overflow-y-scroll pb-16 bg-[#E6E6C2]">
       {/* Title and description */}
       <div className="flex flex-col">
         <h1 className="text-2xl font-semibold tracking-tight">
@@ -125,16 +125,14 @@ const ManageCat = () => {
         </div>
 
         {/* Add image input */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <Input
             name="images"
-            placeholder="Image URL"
+            placeholder="Enter Cat Image URL"
             value={image}
             onChange={(e) => setImage(e.target.value)}
           />
-          <Button onClick={handleAddImage}>
-            <PlusIcon />
-          </Button>
+          <Button onClick={handleAddImage}>Add image</Button>
         </div>
 
         {/* Display image errors */}
