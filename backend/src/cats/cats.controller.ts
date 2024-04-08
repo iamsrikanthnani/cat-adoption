@@ -34,7 +34,6 @@ export class CatsController {
     return this.catsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard, AuthGuard)
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.catsService.findOne(+id, "get");

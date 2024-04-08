@@ -5,6 +5,7 @@ import { TYPE_LOGIN } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { LOGIN_API_URL } from "@/apis";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "@/contexts/auth";
 
 export const useLogin = () => {
   // STATES
@@ -17,6 +18,7 @@ export const useLogin = () => {
     password: "",
   });
   const navigate = useNavigate();
+  const { setUser, setIsAuthenticated } = useAuthContext();
   // Mutation hook for handling API calls
   const mutation = useMutation({
     mutationFn: async ({
@@ -40,6 +42,8 @@ export const useLogin = () => {
           return null;
         }
         toast.success(`Hello 👋, Welcome back!`);
+        setIsAuthenticated(true);
+        setUser(data?.user);
         localStorage.setItem("accessToken", data?.accessToken);
         localStorage.setItem("user", JSON.stringify(data?.user));
         navigate("/");
