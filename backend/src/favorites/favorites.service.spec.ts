@@ -78,7 +78,7 @@ describe("FavoritesService", () => {
 
       expect(result).toEqual({ id: favoriteId });
       expect(favoriteRepository.findOne).toHaveBeenCalledWith({
-        where: { id: favoriteId },
+        where: { cat: { id: favoriteId } },
       });
     });
 
@@ -89,10 +89,10 @@ describe("FavoritesService", () => {
         .mockResolvedValueOnce(undefined);
 
       await expect(service.findOne(1, "get")).rejects.toThrowError(
-        new HttpException("Favorite with ID 1 not found.", HttpStatus.NOT_FOUND)
+        new HttpException("Favorite not found.", HttpStatus.NOT_FOUND)
       );
       expect(favoriteRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 1 },
+        where: { cat: { id: 1 } },
       });
     });
   });
